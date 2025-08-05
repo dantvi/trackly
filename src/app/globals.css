@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+
+:root {
+  --background: #8b8b8f;
+  --foreground: #201f24;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Public Sans', sans-serif;
+}
