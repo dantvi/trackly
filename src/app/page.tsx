@@ -1,9 +1,12 @@
-export default function Home() {
+import SidebarNavigation from '@/components/layout/SidebarNavigation';
+
+export default function HomePage() {
   return (
-    <main className='min-h-screen flex items-center justify-center'>
-      <h1 className='text-4xl font-bold'>
-        Welcome to Trackly 
-      </h1>
-    </main>
+    <div className='flex h-screen'>
+      <SidebarNavigation />
+      <div className='flex-1 flex items-center justify-center'>
+        <h1 className='text-2xl font-semibold'>Main content preview</h1>
+      </div>
+    </div>
   );
 }
