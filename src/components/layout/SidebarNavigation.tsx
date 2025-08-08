@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { useUiStore } from '@/lib/store/uiStore';
 
 const navItems = [
   { label: 'Overview', href: '/dashboard', icon: <Home size={20} /> },
@@ -26,34 +27,60 @@ const navItems = [
 
 export default function SidebarNavigation() {
   const pathname = usePathname();
+  const { sidebarCollapsed, toggleSidebar } = useUiStore();
 
   return (
-    <aside className="flex h-screen w-64 flex-col justify-between bg-[#201F24] px-4 py-6 text-white rounded-tr-[16px] rounded-br-[16px]">
+    <aside
+      className={clsx(
+        'flex h-screen flex-col justify-between bg-[#201F24] px-4 py-6 text-white rounded-tr-[16px] rounded-br-[16px] transition-all duration-300',
+        sidebarCollapsed ? 'w-16' : 'w-64'
+      )}
+      aria-expanded={!sidebarCollapsed}
+    >
+      {/* Top section */}
       <div>
-        <div className='mb-8 text-2xl font-bold tracking-tight'>Trackly</div>
+        <div className='mb-8 text-2xl font-bold tracking-tight'>
+          {sidebarCollapsed ? 'T' : 'Trackly'}
+        </div>
         <nav className='space-y-1'>
           {navItems.map(({ label, href, icon }) => (
             <Link
               key={href}
               href={href}
+              title={sidebarCollapsed ? label : undefined}
               className={clsx(
-                'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-[#2A2A2D]',
+                'flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-[#2A2A2D]',
+                sidebarCollapsed ? 'justify-center' : 'gap-3',
                 pathname === href ? 'bg-[#2A2A2D] text-white' : 'text-zinc-300'
               )}
             >
-              {icon}
-              <span>{label}</span>
+              <span className='flex-shrink-0'>{icon}</span>
+              {!sidebarCollapsed && <span>{label}</span>}
             </Link>
           ))}
         </nav>
       </div>
 
+      {/* Bottom button */}
       <button
-        className='flex items-center gap-2 rounded-md px-3 py-2 text-sm text-zinc-400 hover:bg-[#2A2A2D] hover:text-white'
-        aria-label='Minimize menu'
+        onClick={toggleSidebar}
+        aria-pressed={sidebarCollapsed}
+        aria-label={sidebarCollapsed ? 'Expand menu' : 'Minimize menu'}
+        className={clsx(
+          'flex items-center rounded-md px-3 py-2 text-sm text-zinc-400 hover:bg-[#2A2A2D] hover:text-white transition-colors',
+          sidebarCollapsed ? 'justify-center' : 'gap-2'
+        )}
       >
-        <ChevronLeft size={18} />
-        Minimize Menu
+        <span className='flex-shrink-0'>
+          <ChevronLeft
+            size={18}
+            className={clsx(
+              'transition-transform duration-300',
+              sidebarCollapsed && 'rotate-180'
+            )}
+          />
+        </span>
+        {!sidebarCollapsed && 'Minimize Menu'}
       </button>
     </aside>
   );
